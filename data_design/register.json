@@ -1,0 +1,10 @@
+{
+  "student_address":"address",
+  "student_id":"string",
+  "semester":"string",
+  "student_name":"string",
+  "course_name":"string",
+  "credit":"int",
+  "grade":"string",
+  "status":"string",
+}

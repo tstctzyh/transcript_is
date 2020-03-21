@@ -1,0 +1,5 @@
+{
+  "course_code":"string",
+  "course_name":"string",
+  "credit":"int",
+}

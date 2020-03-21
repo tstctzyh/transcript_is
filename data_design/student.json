@@ -1,0 +1,14 @@
+{
+  "student_address":"address",
+  "student_id":"string",
+  "name":"string",
+  "birth_date":"string",
+  "lastname":"string",
+  "email":"string",
+  "home_address":"string",
+  "level":"string",
+  "school":"string",
+  "major":"string",
+  "admid_date":"string",
+  "status":"string",
+}
