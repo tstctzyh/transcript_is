@@ -9,6 +9,7 @@ contract Student {
         string  student_id;
         string  name;
         string  lastname;
+        mapping (uint=>RegisterData) MyCourse;
     }
 
     struct CourseData {
@@ -18,7 +19,6 @@ contract Student {
     }
 
     struct RegisterData{
-        uint8   register_id;
         uint    year;
         uint    semester;
         address student_address;
@@ -34,22 +34,24 @@ contract Student {
         uint    block_time;
     }
 
-    mapping (address=>StudentData) private Students;
+    mapping (address=>StudentData) public Students;
+    mapping (address=>bool) private StudentsCheck;
+
     address[] private addressStudents;
 
     mapping (string=>CourseData) private Courses;
+    mapping (string=>bool) private CoursesCheck;
     string[] private courseIdAll;
 
-    mapping (uint8=>RegisterData) private Registers;
-    uint8[] private registerIdAll;
+    mapping (address=>RegisterData) private Registers;
+
+    address[] private registerIdAll;
+    RegisterData[] private myRegister;
 
     constructor () public{
 
     }
 
-    function random() private view returns (uint8) {
-       return uint8(uint256(keccak256(abi.encodePacked((block.timestamp)))))%251;
-   }
 
    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
@@ -70,40 +72,56 @@ contract Student {
         return string(bstr);
     }
 
-    function getStudents() public view returns (StudentData[] memory){
+    // function getStudents() public view returns (StudentData[] memory){
 
-        StudentData[] memory total_student = new StudentData[](addressStudents.length);
-        for (uint i=0; i<addressStudents.length; i++) {
-            total_student[i] = Students[addressStudents[i]];
-        }
+    //     StudentData[] memory total_student = new StudentData[](addressStudents.length);
+    //     for (uint i=0; i<addressStudents.length; i++) {
+    //         total_student[i] = Students[addressStudents[i]];
+    //     }
 
-        return total_student;
-    }
+    //     return total_student;
+    // }
 
     function getMyProfile() public view returns (StudentData memory){
-        return Students[msg.sender];
+        StudentData memory student_data;
+        student_data=Students[msg.sender];
+
+        return student_data;
+
     }
 
-    function getStudentsDataByID(string memory std_id) public view returns (StudentData memory){
-        bytes memory std_where = bytes(std_id);
-        StudentData[] memory total_student = new StudentData[](addressStudents.length);
-        StudentData memory student_search;
-        for (uint i=0; i<addressStudents.length; i++) {
-            total_student[i] = Students[addressStudents[i]];
-            bytes memory std_check = bytes(total_student[i].student_id);
-            if(keccak256(abi.encodePacked((std_check))) == keccak256(abi.encodePacked((std_where)))){
-                student_search = total_student[i];
-                return student_search;
-            }
+    // function getStudentsDataByID(string memory std_id) public view returns (StudentData memory){
+    //     bytes memory std_where = bytes(std_id);
+    //     StudentData[] memory total_student = new StudentData[](addressStudents.length);
+    //     StudentData memory student_search;
+    //     for (uint i=0; i<addressStudents.length; i++) {
+    //         total_student[i] = Students[addressStudents[i]];
+    //         bytes memory std_check = bytes(total_student[i].student_id);
+    //         if(keccak256(abi.encodePacked((std_check))) == keccak256(abi.encodePacked((std_where)))){
+    //             student_search = total_student[i];
+    //             return student_search;
+    //         }
+    //     }
+
+    //     return student_search;
+
+    // }
+    modifier checkDuplicate() {
+        if(StudentsCheck[msg.sender]==true){
+               require(false);
         }
 
-        return student_search;
+        //move all code thai call this function to _
+        _;
+
 
     }
-
 
     function addStudent (string memory _name,string memory _lastame ) public checkDuplicate{
         addressStudents.push(msg.sender);
+
+        StudentsCheck[msg.sender]=true;
+
         StudentData storage o = Students[msg.sender];
         o.student_address = msg.sender;
         uint id =addressStudents.length;
@@ -116,38 +134,15 @@ contract Student {
         o.lastname = _lastame;
     }
 
-    modifier checkDuplicate() {
-        StudentData[] memory total_student = new StudentData[](addressStudents.length);
-        for (uint i=0; i<addressStudents.length; i++) {
-            total_student[i] = Students[addressStudents[i]];
-
-            if(msg.sender==total_student[i].student_address){
-               require(false);
-            }
-        }
-
-        //move all code thai call this function to _
-        _;
-
-
-    }
-
     function checkDuplicateCourse(string memory _course_id) internal returns (bool){
-        bytes memory course_where = bytes(_course_id);
-        CourseData[] memory total_course = new CourseData[](courseIdAll.length);
-        for (uint i=0; i<courseIdAll.length; i++) {
-            bytes memory course_check = bytes(total_course[i].course_id);
-            if(keccak256(abi.encodePacked((course_check))) == keccak256(abi.encodePacked((course_where)))){
-                return false;
-            }
-        }
-
-        return true;
+       return CoursesCheck[_course_id];
     }
 
     function addCourse (string memory _course_id,string memory _course_name,uint _credit ) public {
         bool check_dup = checkDuplicateCourse(_course_id);
-        require(check_dup);
+        require(!check_dup);
+
+        CoursesCheck[_course_id]=true;
 
         courseIdAll.push(_course_id);
         CourseData storage o = Courses[_course_id];
@@ -169,19 +164,25 @@ contract Student {
 
 
     function getCourseByCourseID(string memory coures_id) public view returns (CourseData memory){
-        bytes memory course_where = bytes(coures_id);
-        CourseData[] memory total_course = new CourseData[](courseIdAll.length);
+        // bytes memory course_where = bytes(coures_id);
+        // CourseData[] memory total_course = new CourseData[](courseIdAll.length);
+        // CourseData memory course_search;
+        // for (uint i=0; i<courseIdAll.length; i++) {
+        //     total_course[i] = Courses[courseIdAll[i]];
+        //     bytes memory course_check = bytes(total_course[i].course_id);
+        //     if(keccak256(abi.encodePacked((course_check))) == keccak256(abi.encodePacked((course_where)))){
+        //         course_search = total_course[i];
+        //         return course_search;
+        //     }
+        // }
+
+        // return course_search;
+
         CourseData memory course_search;
-        for (uint i=0; i<courseIdAll.length; i++) {
-            total_course[i] = Courses[courseIdAll[i]];
-            bytes memory course_check = bytes(total_course[i].course_id);
-            if(keccak256(abi.encodePacked((course_check))) == keccak256(abi.encodePacked((course_where)))){
-                course_search = total_course[i];
-                return course_search;
-            }
-        }
+        course_search=Courses[coures_id];
 
         return course_search;
+
     }
 
     function checkCourseRegister(uint _year,uint _semester,string memory _course_id)  internal returns (bool){
@@ -192,7 +193,7 @@ contract Student {
         RegisterData[] memory total_register = new RegisterData[](registerIdAll.length);
         for (uint i=0; i<registerIdAll.length; i++) {
             total_register[i] = Registers[registerIdAll[i]];
-            bytes memory course_check = bytes(_course_id);
+            bytes memory course_check = bytes(total_register[i].course_id);
             if(
                 keccak256(abi.encodePacked((course_check))) == keccak256(abi.encodePacked((course_where))) &&
                 total_register[i].student_address == student_address &&
@@ -216,9 +217,8 @@ contract Student {
             require(false);
         }
 
-        uint8 register_id = random();
-        registerIdAll.push(register_id);
-        RegisterData storage o = Registers[register_id];
+        registerIdAll.push(msg.sender);
+        RegisterData storage o = Registers[msg.sender];
         o.year=_year;
         o.semester=_semester;
         o.student_address=msg.sender;
@@ -232,7 +232,55 @@ contract Student {
         o.grade="-";
         o.block_number=block.number;
         o.block_time=block.timestamp;
+
     }
+
+    function getCourseRegister() public view  returns (RegisterData[] memory) {
+        return myRegister;
+    }
+
+    function setCourseRegister(uint _year,uint _semester) public {
+        delete myRegister;
+        for (uint i=0; i<registerIdAll.length; i++) {
+            if(_year==Registers[registerIdAll[i]].year
+            && Registers[registerIdAll[i]].semester==_semester
+            && Registers[registerIdAll[i]].student_address==msg.sender){
+               myRegister.push(Registers[registerIdAll[i]]);
+            }
+        }
+
+    }
+
+    function deleteCourseRegister(uint _year,uint _semester,string memory _course_id) public {
+        bytes memory course_id_where = bytes(_course_id);
+        // delete myRegister;
+        for (uint i=0; i<myRegister.length; i++) {
+            bytes memory course_check = bytes(myRegister[i].course_id);
+            if(_year==myRegister[i].year
+            && myRegister[i].semester==_semester
+            && keccak256(abi.encodePacked((course_check))) == keccak256(abi.encodePacked((course_id_where)))
+            && myRegister[i].student_address==msg.sender){
+               delete myRegister[i];
+            }
+        }
+
+    }
+
+    function setCourseRegisterByStudentID(uint _year,uint _semester,string memory _student_id) public {
+        bytes memory std_id_where = bytes(_student_id);
+        delete myRegister;
+        for (uint i=0; i<registerIdAll.length; i++) {
+            bytes memory std_check = bytes(Registers[registerIdAll[i]].student_id);
+
+            if(Registers[registerIdAll[i]].year==_year &&
+            Registers[registerIdAll[i]].semester==_semester &&
+            keccak256(abi.encodePacked((std_check))) == keccak256(abi.encodePacked((std_id_where)))
+            ){
+                myRegister.push(Registers[registerIdAll[i]]);
+            }
+        }
+    }
+
 
 
 }
