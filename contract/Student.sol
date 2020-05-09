@@ -24,6 +24,15 @@ contract Student {
         string  course_id;
     }
 
+    struct Register{
+        string[]      year;
+        // bytes[]      semester;
+        // bytes[]    course_id;
+        uint        num_register;
+        mapping (string=>RegisterData)  regis_data;
+    }
+
+
     struct RegisterData{
         uint    year;
         uint    semester;
@@ -52,10 +61,11 @@ contract Student {
     mapping (string=>CourseRegister) private CourseRegisters;
     string[] private RegisterKey;
 
-    mapping (string=>RegisterData) private Registers;
+    // mapping (string=>RegisterData) private Registers;
+    mapping (uint=>RegisterData) private Registers;
 
     // mapping (int=>RegisterData) public registerCourse;
-    address[] private registerIdAll;
+    uint[] private registerIdAll;
     // RegisterData[] private myRegister;
 
     constructor () public{
@@ -63,7 +73,13 @@ contract Student {
     }
 
 
-   function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+
+
+    function random() private view returns (uint8) {
+        return uint8(uint256(keccak256(abi.encodePacked((block.timestamp)))))%251;
+    }
+
+    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
             return "0";
         }
@@ -155,36 +171,26 @@ contract Student {
 
     }
 
-    function checkCourseRegister(uint _year,uint _semester,string memory _course_id)  internal returns (uint){
+    function checkCourseRegister(uint _year,uint _semester,string memory _course_id)  internal returns (bool){
         //address student
         address student_address = msg.sender;
         bytes memory course_where = bytes(_course_id);
 
-        Register storage register_data = Registers[student_address];
-        mapping (string=>RegisterData) storage regis_record = register_data.regis_record;
-        // uint num_register = register_data.num_register;
+        RegisterData[] memory total_register = new RegisterData[](registerIdAll.length);
+        for (uint i=0; i<registerIdAll.length; i++) {
+            total_register[i] = Registers[registerIdAll[i]];
+            bytes memory course_check = bytes(_course_id);
+            if(
+                keccak256(abi.encodePacked((course_check))) == keccak256(abi.encodePacked((course_where))) &&
+                total_register[i].student_address == student_address &&
+                total_register[i].year == _year &&
+                total_register[i].semester == _semester
+            ){
+                return true;
+            }
+        }
 
-        string memory year_str=uint2str(_year);
-        string memory semester_str=uint2str(_semester);
-
-        string memory key_check = string(abi.encodePacked(year_str,"_",semester_str,"_",_course_id));
-
-        return regis_record[key_check].year;
-        // RegisterData[] memory total_register = new RegisterData[](registerIdAll.length);
-        // for (uint i=0; i<num_register; i++) {
-        //     total_register[i] = Registers[registerIdAll[i]];
-        //     bytes memory course_check = bytes(total_register[i].course_id);
-        //     if(
-        //         keccak256(abi.encodePacked((course_check))) == keccak256(abi.encodePacked((course_where))) &&
-        //         total_register[i].student_address == student_address &&
-        //         total_register[i].year == _year &&
-        //         total_register[i].semester == _semester
-        //     ){
-        //         return true;
-        //     }
-        // }
-
-        // return false;
+        return false;
 
     }
 
@@ -192,24 +198,14 @@ contract Student {
         StudentData memory myprofile = getMyProfile();
         CourseData memory course_select= getCourseByCourseID(_course_id);
 
-        uint stat_register = checkCourseRegister(_year,_semester,_course_id);
-        if(stat_register>0){
+        bool stat_register = checkCourseRegister(_year,_semester,_course_id);
+        if(stat_register==true){
             require(false);
         }
 
-        registerIdAll.push(msg.sender);
-        Register storage a = Registers[msg.sender];
-        a.student_address = msg.sender;
-
-        uint num_record=a.num_register;
-
-        string memory year_str=uint2str(_year);
-        string memory semester_str=uint2str(_semester);
-
-        string memory key_regis = string(abi.encodePacked(year_str,"_",semester_str,"_",_course_id));
-
-        RegisterData storage o = a.regis_record[key_regis];
-
+        uint8 register_id = random();
+        registerIdAll.push(register_id);
+        RegisterData storage o = Registers[register_id];
         o.year=_year;
         o.semester=_semester;
         o.student_address=msg.sender;
@@ -223,18 +219,19 @@ contract Student {
         o.grade="-";
         o.block_number=block.number;
         o.block_time=block.timestamp;
-
-        a.num_register=num_record+1;
-
     }
 
-    function getCourseRegister() public view returns (Register memory) {
+    // function getCourseRegister() public view returns (RegistersData[] memory) {
 
-        Register memory regis;
-        regis = Registers[msg.sender];
+    //     RegisterData memory regis;
+    //     regis = Registers[msg.sender];
 
-        return regis;
-    }
+    //     RegistersData[] memory return_data;
+
+
+
+    //     return return_data;
+    // }
 
     // function setCourseRegister(uint _year,uint _semester) public {
     //     delete myRegister;
