@@ -9,6 +9,7 @@ contract Student {
         string  student_id;
         string  name;
         string  lastname;
+        uint    num_register;
     }
 
     struct CourseData {
@@ -23,15 +24,6 @@ contract Student {
         address student_address;
         string  course_id;
     }
-
-    struct Register{
-        string[]      year;
-        // bytes[]      semester;
-        // bytes[]    course_id;
-        uint        num_register;
-        mapping (string=>RegisterData)  regis_data;
-    }
-
 
     struct RegisterData{
         uint    year;
@@ -132,6 +124,7 @@ contract Student {
         o.student_id = string(abi.encodePacked("STD_",id_str));
         o.name = _name;
         o.lastname = _lastame;
+        o.num_register=0;
     }
 
     function checkDuplicateCourse(string memory _course_id) internal returns (bool){
@@ -179,7 +172,7 @@ contract Student {
         RegisterData[] memory total_register = new RegisterData[](registerIdAll.length);
         for (uint i=0; i<registerIdAll.length; i++) {
             total_register[i] = Registers[registerIdAll[i]];
-            bytes memory course_check = bytes(_course_id);
+            bytes memory course_check = bytes(total_register[i].course_id);
             if(
                 keccak256(abi.encodePacked((course_check))) == keccak256(abi.encodePacked((course_where))) &&
                 total_register[i].student_address == student_address &&
@@ -203,9 +196,8 @@ contract Student {
             require(false);
         }
 
-        uint8 register_id = random();
-        registerIdAll.push(register_id);
-        RegisterData storage o = Registers[register_id];
+        registerIdAll.push(block.number);
+        RegisterData storage o = Registers[block.number];
         o.year=_year;
         o.semester=_semester;
         o.student_address=msg.sender;
@@ -219,46 +211,45 @@ contract Student {
         o.grade="-";
         o.block_number=block.number;
         o.block_time=block.timestamp;
+
+        StudentData storage p = Students[msg.sender];
+        p.num_register=p.num_register+1;
     }
 
-    // function getCourseRegister() public view returns (RegistersData[] memory) {
+    function getCourseRegister() public view returns (RegisterData[] memory) {
 
-    //     RegisterData memory regis;
-    //     regis = Registers[msg.sender];
+        // RegisterData memory regis;
+        // regis = Registers[msg.sender];
+        StudentData memory myprofile = getMyProfile();
 
-    //     RegistersData[] memory return_data;
+        RegisterData[] memory total_register = new RegisterData[](myprofile.num_register);
+        uint num_regis = myprofile.num_register;
+        uint k=0;
+        for (uint i=0; i<registerIdAll.length; i++) {
+            RegisterData memory regis_chk = Registers[registerIdAll[i]];
+            if(regis_chk.student_address==msg.sender && k<num_regis){
+                total_register[k]=regis_chk;
+                k++;
+            }
+        }
 
+        return total_register;
+    }
 
+    function deleteCourseRegister(uint _year,uint _semester,string memory _course_id) public {
+        bytes memory course_id_where = bytes(_course_id);
+        // delete myRegister;
+        for (uint i=0; i<registerIdAll.length; i++) {
+            bytes memory course_check = bytes(Registers[i].course_id);
+            if(_year==Registers[i].year
+            && Registers[i].semester==_semester
+            && keccak256(abi.encodePacked((course_check))) == keccak256(abi.encodePacked((course_id_where)))
+            && Registers[i].student_address==msg.sender){
+              delete Registers[i];
+            }
+        }
 
-    //     return return_data;
-    // }
-
-    // function setCourseRegister(uint _year,uint _semester) public {
-    //     delete myRegister;
-    //     for (uint i=0; i<registerIdAll.length; i++) {
-    //         if(_year==Registers[registerIdAll[i]].year
-    //         && Registers[registerIdAll[i]].semester==_semester
-    //         && Registers[registerIdAll[i]].student_address==msg.sender){
-    //           myRegister.push(Registers[registerIdAll[i]]);
-    //         }
-    //     }
-
-    // }
-
-    // function deleteCourseRegister(uint _year,uint _semester,string memory _course_id) public {
-    //     bytes memory course_id_where = bytes(_course_id);
-    //     // delete myRegister;
-    //     for (uint i=0; i<myRegister.length; i++) {
-    //         bytes memory course_check = bytes(myRegister[i].course_id);
-    //         if(_year==myRegister[i].year
-    //         && myRegister[i].semester==_semester
-    //         && keccak256(abi.encodePacked((course_check))) == keccak256(abi.encodePacked((course_id_where)))
-    //         && myRegister[i].student_address==msg.sender){
-    //           delete myRegister[i];
-    //         }
-    //     }
-
-    // }
+    }
 
     // function setCourseRegisterByStudentID(uint _year,uint _semester,string memory _student_id) public {
     //     bytes memory std_id_where = bytes(_student_id);
