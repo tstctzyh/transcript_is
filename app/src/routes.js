@@ -35,6 +35,8 @@ const Typography = React.lazy(() => import('./views/Theme/Typography'));
 const Widgets = React.lazy(() => import('./views/Widgets/Widgets'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
+const Students = React.lazy(() => import('./views/Transcript/Students'));
+const StudentDetail = React.lazy(() => import('./views/Transcript/StudentDetail'));
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
@@ -79,6 +81,8 @@ const routes = [
   { path: '/charts', name: 'Charts', component: Charts },
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
+  { path: '/students', exact: true,  name: 'Student', component: Students },
+  { path: '/students/:id', exact: true, name: 'Student Details', component: StudentDetail },
 ];
 
 export default routes;
