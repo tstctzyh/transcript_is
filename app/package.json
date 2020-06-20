@@ -27,6 +27,7 @@
     "fs-extra": "^9.0.1",
     "ganache-cli": "^6.9.1",
     "mocha": "^8.0.1",
+    "next": "^9.4.4",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -38,18 +39,18 @@
     "react-test-renderer": "^16.13.1",
     "reactstrap": "^8.4.1",
     "simple-line-icons": "^2.4.1",
-    "solc": "^0.4.26"
+    "solc": "^0.4.26",
+    "truffle-hdwallet-provider": "^1.0.17",
+    "web3": "^1.2.9"
   },
   "devDependencies": {
     "react-scripts": "^3.4.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:cov": "npm test -- --coverage --watchAll=false",
-    "test:debug": "react-scripts --inspect-brk test --runInBand",
-    "eject": "react-scripts eject"
+
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
   },
   "bugs": {
     "url": "https://github.com/coreui/coreui-free-react-admin-template/issues"
