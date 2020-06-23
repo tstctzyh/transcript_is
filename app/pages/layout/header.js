@@ -1,19 +1,29 @@
 import React, { Component } from "react";
+import {Link,Router} from '../../routes'
 import { Menu } from "semantic-ui-react";
 
 class Header extends Component {
   state = {};
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+  handleItemClick = (e, { name }) => {
+    this.setState({ activeItem: name })
+    Router.push('/'+name)
+  };
   render() {
     const { activeItem } = this.state;
 
     return (
       <Menu>
-        <Menu.Item name="transcript_app">Transcript</Menu.Item>
+        <Link route="/">
+          <a>
+            <Menu.Item name="transcript_app">
+              Transcript
+            </Menu.Item>
+          </a>
+        </Link>
         <Menu.Item
-          name="home"
-          active={activeItem === "home"}
+          name="index"
+          active={activeItem === "index"}
           onClick={this.handleItemClick}
         >
           Home

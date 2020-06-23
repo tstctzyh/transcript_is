@@ -1,6 +1,6 @@
 {
   "name": "transcript_js",
-  "version": "2.6.1",
+  "version": "1.0.0",
   "description": "",
   "author": "",
   "homepage": "",
@@ -17,6 +17,7 @@
     "ganache-cli": "^6.9.1",
     "mocha": "^8.0.1",
     "next": "^9.4.4",
+    "next-routes": "^1.4.2",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -34,7 +35,8 @@
     "react-scripts": "^3.4.1"
   },
   "scripts": {
-    "dev": "next",
+    "test": "mocha",
+    "dev": "node server.js",
     "build": "next build",
     "start": "next start"
   },
