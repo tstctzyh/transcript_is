@@ -10,17 +10,17 @@ class StudentIndex extends Component {
   }
 
   render() {
-    console.log(this.props.students);
+    // console.log(this.props.students);
     return (
       <div>
         <h3>Student List</h3>
         <Table compact celled>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Address</Table.HeaderCell>
-              <Table.HeaderCell>Name</Table.HeaderCell>
-              <Table.HeaderCell>Last Name</Table.HeaderCell>
-              <Table.HeaderCell>View</Table.HeaderCell>
+              <Table.HeaderCell>Student Address</Table.HeaderCell>
+              {/* <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>Last Name</Table.HeaderCell> */}
+              <Table.HeaderCell textAlign="center">View</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
@@ -32,9 +32,9 @@ class StudentIndex extends Component {
                 return (
                   <Table.Row key={"student_"+key}>
                     <Table.Cell>{item}</Table.Cell>
-                    <Table.Cell>September 14, 2013</Table.Cell>
-                    <Table.Cell>jhlilk22@yahoo.com</Table.Cell>
-                    <Table.Cell>
+                    {/* <Table.Cell>September 14, 2013</Table.Cell>
+                    <Table.Cell>jhlilk22@yahoo.com</Table.Cell> */}
+                    <Table.Cell textAlign="center">
                       <Button.Group basic size='small'>
                         <Link route={`/student/${item}`}>
                           <a><Button icon='eye' /></a>
