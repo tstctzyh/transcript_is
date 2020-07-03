@@ -41,7 +41,8 @@ describe('Students',()=>{
 
     it('marks caller as owner students',async ()=>{
         const me_student = await student.methods.getStudent().call()
-        assert.equal(accounts[0],me_student[0]['student_address'])
+        // console.log("me_student",me_student)
+        assert.equal(accounts[0],me_student[0])
     })
 
     it('allow student to register course',async ()=>{
@@ -50,7 +51,12 @@ describe('Students',()=>{
             gas:'6000000'
         })
 
-        const my_score=await student.methods.getMyScore().call()
+        const num_register = await student.methods.GetNumRegister().call()
+        
+        if(num_register>0){
+            const my_score = await student.methods.getMyScore(0).call()
+            console.log("my_score", my_score)
+        }
     })
 
     it('Show All Student',async ()=>{

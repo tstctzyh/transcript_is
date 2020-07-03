@@ -17,7 +17,7 @@ class StudentIndex extends Component {
         <Table compact celled>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>Student Address</Table.HeaderCell>
+              <Table.HeaderCell>Contact Address</Table.HeaderCell>
               {/* <Table.HeaderCell>Name</Table.HeaderCell>
               <Table.HeaderCell>Last Name</Table.HeaderCell> */}
               <Table.HeaderCell textAlign="center">View</Table.HeaderCell>

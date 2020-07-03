@@ -1,8 +1,6 @@
 pragma solidity >=0.4.22 <0.6.0;
-pragma experimental ABIEncoderV2;
 
 contract StudentFactory{
-    // address[] public registerStudent;
     Student[] public registerStudent;
     
     function createStudent(string memory firstname, string memory lastname) public {
@@ -16,7 +14,6 @@ contract StudentFactory{
 }
 
 contract Student {
-//   StudentData[] Students;
 
     struct StudentData {
         address student_address; 
@@ -69,20 +66,17 @@ contract Student {
         return string(bstr);
     }
     
-    function getStudent() public view returns(StudentData[] memory ){
-        return studentdatas;
+    function getStudent() public view returns(address,string memory,string memory){
+        return (studentdatas[0].student_address,studentdatas[0].name,studentdatas[0].lastname);
     }
     
 
-    function addStudent (address creator,string memory _name,string memory _lastame ) public {
-    //   if(studentdatas.length>0){
-    //       require(false);
-    //   }
-        
+    function addStudent (address creator,string memory name,string memory lastname ) public {
+
         StudentData memory newStudentData = StudentData({
             student_address : creator,
-            name: _name,
-            lastname:_lastname
+            name: name,
+            lastname:lastname
         });
         
         studentdatas.push(newStudentData);
@@ -106,8 +100,18 @@ contract Student {
         registerdatas.push(newRegisterData);
     }
     
-    function getMyScore() public view returns(RegisterData[] memory ){
-        return registerdatas;
+    function GetNumRegister() public view returns(uint){
+        return (registerdatas.length);
+    }
+    
+    function getMyScore(uint index) public view returns(uint,uint,string memory,uint,string memory){
+        return (
+            registerdatas[index].year,
+            registerdatas[index].semester,
+            registerdatas[index].course_id,
+            registerdatas[index].score,
+            registerdatas[index].grade
+        );
     }
     
 

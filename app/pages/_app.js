@@ -8,7 +8,7 @@ export default function MyApp({ Component, pageProps }) {
     <Container>
       <Header />
       <Component {...pageProps} />
-      <h1>Footer</h1>
+      {/* <h1>Footer</h1> */}
     </Container>
   );
 }

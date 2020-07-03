@@ -11,7 +11,7 @@ class AddCourse extends Component {
         const std_block = Student(props.query.address)
         const std_data = await std_block.methods.getStudent().call();
 
-        return {c_add:props.query.address,std_block:std_block,std_data:std_data[0]}
+        return {c_add:props.query.address,std_block:std_block,std_data:std_data}
     }
 
     constructor(props) {

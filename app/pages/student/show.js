@@ -9,18 +9,24 @@ class StudentShow extends Component{
         const std_block = Student(props.query.address)
 
         const std_data = await std_block.methods.getStudent().call();
-        const register_data = await std_block.methods.getMyScore().call();
+        const num_register = await std_block.methods.GetNumRegister().call();
+        let register_data = []
+        for (let index = 0; index < num_register; index++) {
+            let register_item = await std_block.methods.getMyScore(index).call();
+            register_data.push(register_item)
+        }
+        
 
-        return {c_add:props.query.address,std_data:std_data[0],register_data:register_data}
+        return {c_add:props.query.address,std_data:std_data,register_data:register_data}
     }
 
     render(){
         return (
         <div>
             <Card fluid={true}>
-                <Card.Content header={'Student Address. '+this.props.std_data['student_address']} />
-                <Card.Content header={"First Name : "+this.props.std_data['name']} />
-                <Card.Content header={"Last Name : "+this.props.std_data['lastname']} />
+                <Card.Content header={'Student Address. '+this.props.std_data[0]} />
+                <Card.Content header={"First Name : "+this.props.std_data[1]} />
+                <Card.Content header={"Last Name : "+this.props.std_data[2]} />
             </Card>
             
             <h3>Course Register</h3>
@@ -40,11 +46,11 @@ class StudentShow extends Component{
                         this.props.register_data && this.props.register_data.length>0 && this.props.register_data.map((item,key)=>{
                             return (
                             <Table.Row key={"reigster_"+key}>
-                                <Table.Cell>{item.year}</Table.Cell>
-                                <Table.Cell>{item.semester}</Table.Cell>
-                                <Table.Cell>{item.course_id}</Table.Cell>
-                                <Table.Cell>{item.score}</Table.Cell>
-                                <Table.Cell>{item.grade}</Table.Cell>
+                                <Table.Cell>{item[0]}</Table.Cell>
+                                <Table.Cell>{item[1]}</Table.Cell>
+                                <Table.Cell>{item[2]}</Table.Cell>
+                                <Table.Cell>{item[3]}</Table.Cell>
+                                <Table.Cell>{item[4]}</Table.Cell>
                             </Table.Row>
                             )
                         })
