@@ -47,30 +47,10 @@ contract Student {
         addStudent(_creator,_name,_lastname);
     }
     
-    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
-        if (_i == 0) {
-            return "0";
-        }
-        uint j = _i;
-        uint len;
-        while (j != 0) {
-            len++;
-            j /= 10;
-        }
-        bytes memory bstr = new bytes(len);
-        uint k = len - 1;
-        while (_i != 0) {
-            bstr[k--] = byte(uint8(48 + _i % 10));
-            _i /= 10;
-        }
-        return string(bstr);
-    }
-    
     function getStudent() public view returns(address,string memory,string memory){
         return (studentdatas[0].student_address,studentdatas[0].name,studentdatas[0].lastname);
     }
     
-
     function addStudent (address creator,string memory name,string memory lastname ) public {
 
         StudentData memory newStudentData = StudentData({
@@ -82,10 +62,8 @@ contract Student {
         studentdatas.push(newStudentData);
     }
     
-    
     function registerScore (uint _year,uint _semester,string memory _course_id,uint _score,string memory _grade) public {
         
-
         RegisterData memory newRegisterData = RegisterData({
             year : _year,
             semester: _semester,
