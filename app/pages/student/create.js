@@ -22,7 +22,6 @@ class CreateStudent extends Component {
     }
 
     handleSubmitStudent = async ()=>{
-        // console.log(this.state)
         if(this.state.firstname!="" && this.state.lastname!=""){
             this.setState({loading:true,errorMessage:''})
 
@@ -31,7 +30,6 @@ class CreateStudent extends Component {
                 const addstd =await factory.methods.createStudent(this.state.firstname,this.state.lastname).send({
                     from:accounts[0]
                 });
-                // console.log(addstd)
                 Router.pushRoute('/')
             } catch(err) {
                 this.setState({errorMessage:err.message})

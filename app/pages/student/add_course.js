@@ -37,21 +37,18 @@ class AddCourse extends Component {
     }
 
     handleSubmitCourse = async ()=>{
-        // // if(this.state.firstname!="" && this.state.lastname!=""){
             this.setState({loading:true,errorMessage:''})
             try{
                 const accounts = await web3.eth.getAccounts();
                 const addscore =await Student(this.props.c_add).methods.registerScore(this.state.year,this.state.semester,this.state.course_id,this.state.score,this.state.grade).send({
                     from:accounts[0]
                 });
-                // console.log(addstd)
                 Router.pushRoute('/student/'+this.props.c_add)
             } catch(err) {
                 this.setState({errorMessage:err.message})
             }
             
             this.setState({loading:false})
-        // }
     }
 
     yearDropdown = ()=>{
@@ -79,7 +76,6 @@ class AddCourse extends Component {
                 <Form>
                     <Form.Field>
                     <label>year</label>
-                    {/* <input onChange={(e)=>this.handleChange("year",e)} value={this.state.year} placeholder='Year' /> */}
                     <Dropdown
                         placeholder='Select Year'
                         fluid
