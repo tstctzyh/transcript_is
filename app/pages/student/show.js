@@ -24,9 +24,11 @@ class StudentShow extends Component{
         return (
         <div>
             <Card fluid={true}>
-                <Card.Content header={'Student Address. '+this.props.std_data[0]} />
+                    <Card.Content header={'Contract Address. ' + this.props.c_add} />
                 <Card.Content header={"First Name : "+this.props.std_data[1]} />
                 <Card.Content header={"Last Name : "+this.props.std_data[2]} />
+                    <Card.Content header={'Creator Address. ' + this.props.std_data[0]} />
+
             </Card>
             
             <h3>Course Register</h3>
