@@ -10,7 +10,6 @@ class StudentIndex extends Component {
   }
 
   render() {
-    console.log(this.props.students);
     return (
       <div>
         <h3>Student List</h3>
